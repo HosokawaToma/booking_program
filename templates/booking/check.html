@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>予約完了</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <main>
+      <div class="container">
+        <div class="inner">
+          <div class="logo">
+            <img src="https://storage.googleapis.com/ezip-logo/135_20221023223126.png" alt="" />
+          </div>
+          <div class="inner_info">
+            <p>以下の内容で予約しました。</p>
+          </div>
+          {% for booking in bookings%}
+          <div class="inner_booking">
+            <p>タイトル:{{title}}</p>
+            <p>日付:{{booking[0]}}/{{booking[1]}}/{{booking[2]}} {{booking[3]}}限 
+              {% if booking[3] == 1 %} 16:00～17:30
+              {% elif booking[3] == 2 %} 16:30～18:00
+              {% elif booking[3] == 3 %} 17:00～18:30
+              {% elif booking[3] == 4 %} 17:30～19:00
+              {% elif booking[3] == 5 %} 18:00～19:30
+              {% elif booking[3] == 6 %} 18:30～20:00
+              {% endif %}
+            </p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

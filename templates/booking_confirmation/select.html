@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <main>
+      <div class="container">
+        <div class="inner">
+          <div class="inner_title">
+            <p>予約内容</p>
+          </div>
+          <form method="POST">
+            <input type="hidden" name="user_id" value="{{user_id}}" />
+            {% for booking in bookings %}
+            <div class="inner_booking">
+              <p class="title">{{booking[4]}}</p>
+              {% if booking[3] == 0 %}
+              <p class="date">{{booking[0]}}/{{booking[1]}}/{{booking[2]}} 15:00~16:30</p>
+              {% elif booking[3] == 1 %}
+              <p class="date">{{booking[0]}}/{{booking[1]}}/{{booking[2]}} 16:00~17:30</p>
+              {% elif booking[3] == 2 %}
+              <p class="date">{{booking[0]}}/{{booking[1]}}/{{booking[2]}} 16:30~18:00</p>
+              {% elif booking[3] == 3 %}
+              <p class="date">{{booking[0]}}/{{booking[1]}}/{{booking[2]}} 17:00~18:30</p>
+              {% elif booking[3] == 4 %}
+              <p class="date">{{booking[0]}}/{{booking[1]}}/{{booking[2]}} 17:30~19:00</p>
+              {% elif booking[3] == 5 %}
+              <p class="date">{{booking[0]}}/{{booking[1]}}/{{booking[2]}} 18:00~19:30</p>
+              {% elif booking[3] == 6 %}
+              <p class="date">{{booking[0]}}/{{booking[1]}}/{{booking[2]}} 18:30~20:00</p>
+              {% endif %}
+              <button
+                type="submit"
+                formaction="/check"
+                name="booking"
+                id="booking"
+                value="{{booking[0]}}-{{booking[1]}}-{{booking[2]}}-{{booking[3]}}-{{booking[4]}}-{{booking[5]}}"
+              >
+                予約取消
+              </button>
+            </div>
+            {% endfor %}
+          </form>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

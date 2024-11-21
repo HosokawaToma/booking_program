@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>タイトル</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+
+<body>
+  <main>
+    <div class="container">
+      <div class="inner">
+        <div class="logo">
+          <img src="" alt="" />
+        </div>
+        <div class="inner_info">
+          <p>ゲームタイトルを選択</p>
+        </div>
+        <form action="/select" method="POST">
+          <input type="hidden" name="liff_id_token" id="liff_id_token"/>
+          <div class="inner_button">
+            <button type="submit" name="title" value="Valorant">
+              Valorant
+            </button>
+          </div>
+          <div class="inner_button">
+            <button type="submit" name="title" value="Fortnite">
+              Fortnite
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script type="text/javascript">
+    window.onload = () => {
+      if (liff.isInClient()) {
+        liff.init({
+          liffId: "2006590378-QwO76GY0",
+        })
+          .then(() => {
+            const idToken = liff.getIDToken();
+            document.getElementById("liff_id_token").value = idToken;
+          })
+          .catch((err) => {
+            alert(err.message)
+            console.log(err.code, err.message);
+          });
+      } else {
+        location.replace("noliff");
+      }
+    };
+  </script>
+</body>
+
+</html>

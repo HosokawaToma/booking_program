@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>予約</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+
+<body>
+  <main>
+    <div class="container">
+      <div class="inner">
+        <div class="inner_btn">
+          <button onClick="backBtn()">前へ</button>
+          <button onClick="nextBtn()">次へ</button>
+        </div>
+        <div class="inner_cell">
+          <p id="now_text">今月: {{now_month_booking_capacity}}</p>
+          <p id="next_text">来月: {{next_month_booking_capacity}}</p>
+        </div>
+        <div class="formgrop">
+          <form action="/check" method="POST">
+            <input type="hidden" name="title" value="{{title}}" />
+            <input type="hidden" name="user_id" value="{{user_id}}" />
+            <div class="calendar">
+              <ul>
+                <li class="data_item">日程</li>
+                <li class="period_item">16:00~<br />17:30</li>
+                <li class="period_item">16:30~<br />18:00</li>
+                <li class="period_item">17:00~<br />18:30</li>
+                <li class="period_item">17:30~<br />19:00</li>
+                <li class="period_item">18:00~<br />19:30</li>
+                <li class="period_item">18:30~<br />20:00</li>
+              </ul>
+              <div class="bookings">
+                <div class="bookings_screen">
+                  {% for capacity_day in now_month_capacities_data %}
+                  <ul>
+                    <li class="data_item">{{capacity_day[0][2]}}</li>
+                    {% for capacity in capacity_day %}
+                    {% if capacity[4] > 0 %}
+                    <li class="booking_item">
+                      <label>
+                        <input type="checkbox" class="now_month_select_bookings" name="now_month_select_bookings"
+                          value="{{capacity[0]}}-{{capacity[1]}}-{{capacity[2]}}-{{capacity[3]}}-{{title}}-{{user_id}}" />
+                        <span>〇</span>
+                      </label>
+                    </li>
+                    {% elif capacity[4] == 0 %}
+                    <li class="booking_item">×</li>
+                    {% elif capacity[4] < 0 %}
+                    <li class="booking_item">✓</li>
+                    {% endif %}
+                    {% endfor %}
+                  </ul>
+                  {% endfor %}
+                  {% for capacity_day in next_month_capacities_data %}
+                  <ul>
+                    <li class="data_item">{{capacity_day[0][2]}}</li>
+                    {% for capacity in capacity_day %}
+                    {% if capacity[4] > 0%}
+                    <li class="booking_item">
+                      <label>
+                        <input type="checkbox" class="next_month_select_bookings" name="next_month_select_bookings" 
+                        value="{{capacity[0]}}-{{capacity[1]}}-{{capacity[2]}}-{{capacity[3]}}-{{title}}-{{user_id}}" />
+                        <span>〇</span>
+                      </label>
+                    </li>
+                    {% elif capacity[4] == 0 %}
+                    <li class="booking_item">×</li>
+                    {% elif capacity[4] < 0%}
+                    <li class="booking_item">✓</li>
+                    {% endif %} 
+                    {% endfor %}
+                  </ul>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            <div class="input">
+              <input type="submit" class="input_submit" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script>
+    let page = 1;
+
+    function backBtn() {
+      var target = document.querySelector(".bookings_screen");
+      if (page == 2) {
+        target.classList.remove("bookings_screen_2");
+        page--;
+      }
+      else if (page == 3) {
+        target.classList.remove("bookings_screen_3");
+        target.classList.add("bookings_screen", "bookings_screen_2");
+        page--;
+      }
+      else if (page == 4) {
+        target.classList.remove("bookings_screen_4");
+        target.classList.add("bookings_screen", "bookings_screen_3");
+        page--;
+      }
+    }
+    function nextBtn() {
+      var target = document.querySelector(".bookings_screen");
+      if (page == 1) {
+        target.classList.add("bookings_screen", "bookings_screen_2");
+        page++;
+      }
+      else if (page == 2) {
+        target.classList.remove("bookings_screen_2");
+        target.classList.add("bookings_screen", "bookings_screen_3");
+        page++;
+      }
+      else if (page == 3) {
+        target.classList.remove("bookings_screen_3");
+        target.classList.add("bookings_screen", "bookings_screen_4");
+        page++;
+      }
+    }
+    const nowCheckMax = {{ now_month_booking_capacity }};
+    const nowCheckBoxes = document.querySelectorAll('.next_month_select_bookings');
+    const nextCheckMax = {{ now_month_booking_capacity }};
+    const nextCheckBoxes = document.querySelectorAll('.next_month_select_bookings');
+
+
+    function nowCheckCount(target) {
+      let checkCount = 0;
+      nowCheckBoxes.forEach(checkBox => {
+        if (checkBox.checked) {
+          checkCount++;
+        }
+      });
+      document.getElementById('nowtext').textContent = '今月: ' + (nowCheckMax - checkCount);
+      if (checkCount > nowCheckMax) {
+        alert('予約上限によりこれ以上選択する事はできません。');
+        target.checked = false;
+        document.getElementById('now_text').textContent = '今月: 0';
+      }
+    }
+
+    nowCheckBoxes.forEach(checkBox => {
+      checkBox.addEventListener('change', () => {
+        nowCheckCount(checkBox);
+      })
+    });
+
+    function nextCheckCount(target) {
+      let checkCount = 0;
+      nextCheckBoxes.forEach(checkBox => {
+        if (checkBox.checked) {
+          checkCount++;
+        }
+      });
+      document.getElementById('next_text').textContent = '来月: ' + (nextCheckMax - checkCount);
+      if (checkCount > nextCheckMax) {
+        alert('予約上限によりこれ以上選択する事はできません。');
+        target.checked = false;
+        document.getElementById('next_text').textContent = '来月: 0';
+      }
+    }
+
+    nextCheckBoxes.forEach(checkBox => {
+      checkBox.addEventListener('change', () => {
+        nextCheckCount(checkBox);
+      })
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+steps:
+  # Dockerイメージをビルド
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'Dockerfile.login', '-t', 'gcr.io/tomato-project-410505/app-login', '.']
+
+  # DockerイメージをArtifact Registryにプッシュ
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/tomato-project-410505/app-login']
+
+  # Cloud Runにデプロイ
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['run', 'deploy', 'app-login',
+           '--image', 'gcr.io/tomato-project-410505/app-login',
+           '--region', 'asia-northeast1',
+           '--platform', 'managed',
+           '--env-vars-file', 'env.yaml',
+           '--service-account', 'sql-access-account@tomato-project-410505.iam.gserviceaccount.com',
+           '--add-cloudsql-instances', 'tomato-project-410505:asia-northeast1:booking-program-db',
+           '--allow-unauthenticated']
+
+images:
+  - 'gcr.io/tomato-project-410505/app-login'

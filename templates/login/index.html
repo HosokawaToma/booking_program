@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ログイン</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+
+<body>
+  <main class="main">
+    <div class="container">
+      <div class="inner">
+        <div class="inner_logo">
+          <img src="https://storage.googleapis.com/ezip-logo/135_20221023223126.png" alt="" />
+        </div>
+        <form name="user_form" id="user_form" action="/check" method="post">
+          <input type="hidden" name="liff_id_token" id="liff_id_token" />
+          <div class="inner_input">
+            <input type="text" class="text" name="email" id="email" required placeholder="メールアドレス" />
+          </div>
+          <div class="inner_input">
+            <input type="password" class="text" name="password" id="password" required placeholder="パスワード" />
+            <p class="errortext">{{error_info}}</p>
+          </div>
+          <div class="inner_input">
+            <input type="submit" class="submit" name="submit" value="ログイン" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script type="text/javascript">
+    window.onload = () => {
+      if (liff.isInClient()) {
+        liff.init({
+          liffId: "2006590378-3XkB0ZpL",
+        })
+          .then(() => {
+            liff.ready.then(() => {
+              if (liff.isLoggedIn()) {
+                const idToken = liff.getIDToken();
+                document.getElementById("liff_id_token").value = idToken;
+              } else {
+                let result = window.confirm("LINE Loginしますか？");
+                if (result) {
+                  liff.login();
+                }
+              }
+            });
+          })
+          .catch((err) => {
+            alert(err.message)
+            console.log(err.code, err.message);
+          });
+      } else {
+        location.replace("noliff");
+      }
+    };
+  </script>
+</body>
+
+</html>
